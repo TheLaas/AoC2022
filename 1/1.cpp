@@ -1,15 +1,8 @@
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include "../common/common.hpp"
-
-using std::ifstream;
+#include "common.hpp"
 
 int main() {
   std::vector<std::vector<int> > elf_buffer;
-  ifstream stream("input1.txt");
+  std::ifstream stream("input1.txt");
   std::string row;
   std::vector<int> current_elf;
 
