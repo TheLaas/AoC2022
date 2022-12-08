@@ -51,6 +51,7 @@
     "typeinfo": "cpp",
     "variant": "cpp",
     "vector": "cpp",
-    "string": "cpp"
+    "string": "cpp",
+    "ostream": "cpp"
   }
 }

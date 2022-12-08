@@ -1,68 +1,40 @@
 #include "common.hpp"
-struct Tree {
-  int height;
-  bool visible;
-};
 
-std::vector<std::vector<Tree>> create_forest(
-    std::vector<std::vector<int>> tree_heights) {
-  std::vector<std::vector<Tree>> forest;
-  for (auto row = tree_heights.begin(); row != tree_heights.end(); row++) {
-    std::vector<Tree> tree_line;
-    for (auto tree = row->begin(); tree != row->end(); tree++) {
-      Tree new_tree = {.height = *tree};
-      if (row == tree_heights.begin() || std::next(row) == tree_heights.end() ||
-          tree == row->begin() || std::next(tree) == row->end()) {
-        new_tree.visible = true;
-      } else {
-        new_tree.visible = false;
-      }
-      tree_line.push_back(new_tree);
-    }
-    forest.push_back(tree_line);
-  }
-  return forest;
-}
-
-bool check_visible(std::vector<std::vector<Tree>> forest, int x_pos,
-                   int y_pos) {
+int check_visible(std::vector<std::vector<int>> forest, int x_pos, int y_pos) {
   auto current_tree = forest.at(y_pos).at(x_pos);
-  bool check = true;
+  int check = 0;
   for (int y = y_pos; y < forest.size() - 1; y++) {
     auto next_tree = forest.at(y + 1).at(x_pos);
-    if (current_tree.height <= next_tree.height) {
-      check = false;
+    if (current_tree <= next_tree) {
+      check += 1;
       break;
     }
   }
-  if (check) return check;
-  check = true;
+  if (check == 0) return 1;
   for (int y = y_pos; y > 0; y--) {
     auto next_tree = forest.at(y - 1).at(x_pos);
-    if (current_tree.height <= next_tree.height) {
-      check = false;
+    if (current_tree <= next_tree) {
+      check += 1;
       break;
     }
   }
-  if (check) return check;
-  check = true;
+  if (check == 1) return 1;
   for (int x = x_pos; x < forest.size() - 1; x++) {
     auto next_tree = forest.at(y_pos).at(x + 1);
-    if (current_tree.height <= next_tree.height) {
-      check = false;
+    if (current_tree <= next_tree) {
+      check += 1;
       break;
     }
   }
-  if (check) return check;
-  check = true;
+  if (check == 2) return 1;
   for (int x = x_pos; x > 0; x--) {
     auto next_tree = forest.at(y_pos).at(x - 1);
-    if (current_tree.height <= next_tree.height) {
-      check = false;
+    if (current_tree <= next_tree) {
+      check += 1;
       break;
     }
   }
-  return check;
+  return check == 3 ? 1 : 0;
 }
 
 int check_view(std::vector<std::vector<int>> forest, int x_pos, int y_pos) {
@@ -115,17 +87,6 @@ int check_view(std::vector<std::vector<int>> forest, int x_pos, int y_pos) {
   return accum * sum;
 }
 
-void print_forest(std::vector<std::vector<Tree>> forest) {
-  for (auto tree_line = forest.begin(); tree_line != forest.end();
-       tree_line++) {
-    for (auto tree = tree_line->begin(); tree != tree_line->end(); tree++) {
-      std::cout << "[" << (tree->visible ? 1 : 0) << "," << tree->height
-                << "] ";
-    }
-    std::cout << std::endl;
-  }
-}
-
 int main() {
   auto parse_func = [](std::string line) {
     std::vector<int> wood_line;
@@ -135,16 +96,13 @@ int main() {
     return wood_line;
   };
   auto trees = helpers::parse_input<std::vector<int>>("input.txt", parse_func);
-  auto forest = create_forest(trees);
   int visible_trees = 0;
-  for (int y = 1; y < forest.size() - 1; y++) {
-    for (int x = 1; x < forest.at(0).size() - 1; x++) {
-      forest.at(y).at(x).visible = check_visible(forest, x, y);
-      if (forest.at(y).at(x).visible) visible_trees++;
+  for (int y = 1; y < trees.size() - 1; y++) {
+    for (int x = 1; x < trees.at(0).size() - 1; x++) {
+      visible_trees += check_visible(trees, x, y);
     }
   }
-  visible_trees += 2 * forest.size() + 2 * forest.at(0).size() - 4;
-  // print_forest(forest);
+  visible_trees += 2 * trees.size() + 2 * trees.at(0).size() - 4;
   std::cout << "1: " << visible_trees << std::endl;
 
   int max = 0;
