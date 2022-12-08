@@ -1,5 +1,3 @@
-// #include "7.hpp"
-
 #include <boost/algorithm/string.hpp>
 #include <map>
 
@@ -11,9 +9,7 @@ class Dir {
 
   void propagate_files(int size) {
     size_files += size;
-    if (name[0] == '/')
-      ;
-    else {
+    if (name[0] != '/') {
       parent->propagate_files(size);
     }
   }
@@ -36,11 +32,7 @@ int main() {
     boost::split(args, line, boost::is_any_of(" "));
     Line l = {.args = args};
     if (line[0] == '$') {
-      if (args.size() == 3) {
-        l.type = CD;
-      } else {
-        l.type = LS;
-      }
+      l.type = args.size() == 3 ? CD : LS;
     } else if (line[0] == 'd') {
       l.type = DIR;
     } else if (std::isdigit(line[0])) {
@@ -67,7 +59,6 @@ int main() {
         }
         break;
       case LS:
-        break;
       case DIR:
         break;
       case FIL:
