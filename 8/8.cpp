@@ -30,11 +30,6 @@ bool check_visible(std::vector<std::vector<Tree>> forest, int x_pos,
   bool check = true;
   for (int y = y_pos; y < forest.size() - 1; y++) {
     auto next_tree = forest.at(y + 1).at(x_pos);
-    // if (next_tree.visible && current_tree.height > next_tree.height) {
-    //   // current_tree.visible = true;
-    //   // return 1;
-    //   // return true;
-    // } else
     if (current_tree.height <= next_tree.height) {
       check = false;
       break;
@@ -44,11 +39,6 @@ bool check_visible(std::vector<std::vector<Tree>> forest, int x_pos,
   check = true;
   for (int y = y_pos; y > 0; y--) {
     auto next_tree = forest.at(y - 1).at(x_pos);
-    // if (next_tree.visible && current_tree.height > next_tree.height) {
-    //   // current_tree.visible = true;
-    //   // return 1;
-    //   // return true;
-    // } else
     if (current_tree.height <= next_tree.height) {
       check = false;
       break;
@@ -58,11 +48,6 @@ bool check_visible(std::vector<std::vector<Tree>> forest, int x_pos,
   check = true;
   for (int x = x_pos; x < forest.size() - 1; x++) {
     auto next_tree = forest.at(y_pos).at(x + 1);
-    // if (next_tree.visible && current_tree.height > next_tree.height) {
-    //   // current_tree.visible = true;
-    //   // return 1;
-    //   // return true;
-    // } else
     if (current_tree.height <= next_tree.height) {
       check = false;
       break;
@@ -72,17 +57,62 @@ bool check_visible(std::vector<std::vector<Tree>> forest, int x_pos,
   check = true;
   for (int x = x_pos; x > 0; x--) {
     auto next_tree = forest.at(y_pos).at(x - 1);
-    // if (next_tree.visible && current_tree.height > next_tree.height) {
-    //   // current_tree.visible = true;
-    //   // return 1;
-    //   // return true;
-    // } else
     if (current_tree.height <= next_tree.height) {
       check = false;
       break;
     }
   }
   return check;
+}
+
+int check_view(std::vector<std::vector<int>> forest, int x_pos, int y_pos) {
+  auto current_tree = forest.at(y_pos).at(x_pos);
+  bool check = true;
+  int accum = 1;
+  int sum = 0;
+  for (int y = y_pos; y < forest.size() - 1; y++) {
+    auto next_tree = forest.at(y + 1).at(x_pos);
+    if (current_tree > next_tree)
+      sum++;
+    else {
+      sum++;
+      break;
+    }
+  }
+  accum *= sum;
+  sum = 0;
+  for (int y = y_pos; y > 0; y--) {
+    auto next_tree = forest.at(y - 1).at(x_pos);
+    if (current_tree > next_tree)
+      sum++;
+    else {
+      sum++;
+      break;
+    }
+  }
+  accum *= sum;
+  sum = 0;
+  for (int x = x_pos; x < forest.size() - 1; x++) {
+    auto next_tree = forest.at(y_pos).at(x + 1);
+    if (current_tree > next_tree)
+      sum++;
+    else {
+      sum++;
+      break;
+    }
+  }
+  accum *= sum;
+  sum = 0;
+  for (int x = x_pos; x > 0; x--) {
+    auto next_tree = forest.at(y_pos).at(x - 1);
+    if (current_tree > next_tree)
+      sum++;
+    else {
+      sum++;
+      break;
+    }
+  }
+  return accum * sum;
 }
 
 void print_forest(std::vector<std::vector<Tree>> forest) {
@@ -114,8 +144,18 @@ int main() {
     }
   }
   visible_trees += 2 * forest.size() + 2 * forest.at(0).size() - 4;
-  print_forest(forest);
+  // print_forest(forest);
   std::cout << "1: " << visible_trees << std::endl;
+
+  int max = 0;
+  int value;
+  for (int y = 1; y < trees.size(); y++) {
+    for (int x = 1; x < trees.at(0).size(); x++) {
+      value = check_view(trees, x, y);
+      if (value > max) max = value;
+    }
+  }
+  std::cout << "2: " << max << std::endl;
 
   return 0;
 }
