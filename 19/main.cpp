@@ -20,6 +20,7 @@ using Vec = std::vector<int>;
 
 class Strategy {
  public:
+  Strategy() {}
   Strategy(Vec blueprint, int minutes)
       : blueprint(blueprint), minutes(minutes) {}
 
@@ -40,7 +41,7 @@ class Strategy {
 
   Vec setup = {1, 0, 0, 0};
   Vec resources = {0, 0, 0, 0};
-  Vec blueprint;
+  Vec blueprint = {0, 0, 0, 0, 0, 0, 0};
   int minutes;
 
  private:
@@ -139,19 +140,6 @@ std::vector<int> extractIntegers(std::string line) {
   return result;
 }
 
-int find_max(std::vector<Strategy> es, bool check_score = false) {
-  if (es.size() > 0) {
-    auto max = std::max_element(
-        es.begin(), es.end(), [](const Strategy &a, const Strategy &b) {
-          return a.resources.at(GEO) < b.resources.at(GEO);
-        });
-    return check_score ? max->resources.at(GEO) * max->blueprint.at(ID)
-                       : max->resources.at(GEO);
-  } else {
-    return 0;
-  }
-};
-
 int calc_potential(Strategy s) {
   int t = TIME_CAP - s.minutes;
   return t * (t - 1) / 2 + s.setup.at(GEO) * t + s.resources.at(GEO);
@@ -162,13 +150,13 @@ int main() {
       helpers::parse_input<std::vector<int>>("input.txt", extractIntegers);
 
   Vec points;
+  int counter = 0;
   for (auto &b : blueprints) {
     std::vector<Strategy> strategies = {Strategy(b, 0)};
-    std::vector<Strategy> evaluated_strategies;
     std::vector<Strategy> ns;
+    Strategy max_s;
     int max = 0;
     while (true) {
-      ns.clear();
       for (auto &s : strategies) {
         if (s.minutes < TIME_CAP && calc_potential(s) < max) {
           // throw away.
@@ -176,20 +164,25 @@ int main() {
           auto ss = s.spawn();
           ns.insert(ns.end(), ss.begin(), ss.end());
         } else {
-          evaluated_strategies.push_back(s);
+          if (s.resources.at(GEO) > max) {
+            max = s.resources.at(GEO);
+            max_s = s;
+          }
         }
       }
-      max = find_max(evaluated_strategies);
       if (ns.size() > 0) {
         strategies.clear();
         strategies.insert(strategies.begin(), ns.begin(), ns.end());
+        ns.clear();
       } else {
+        strategies.clear();
+        ns.clear();
         break;
       }
     }
-    auto score = find_max(evaluated_strategies, true);
+    auto score = max_s.resources.at(GEO) * max_s.blueprint.at(ID);
     points.push_back(score);
-    evaluated_strategies.clear();
+    std::cout << "Current: " << ++counter << std::endl;
   }
 
   int sum = 0;
