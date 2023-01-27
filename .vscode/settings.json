@@ -52,6 +52,9 @@
     "variant": "cpp",
     "vector": "cpp",
     "string": "cpp",
-    "ostream": "cpp"
+    "ostream": "cpp",
+    "bitset": "cpp",
+    "cstdio": "cpp",
+    "sstream": "cpp"
   }
 }

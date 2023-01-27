@@ -7,10 +7,12 @@
       "command": "/usr/bin/g++",
       "args": [
         "-fdiagnostics-color=always",
-        "-g",
+        "-O3",
+        // "-g",
         "-std=c++17",
         "-I",
         "${workspaceFolder}/common",
+        "${workspaceFolder}/common/stopwatch.cpp",
         "${file}",
         "-o",
         "${fileDirname}/${fileBasenameNoExtension}.o"
