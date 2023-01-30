@@ -17,8 +17,8 @@ using Vec = std::vector<int>;
 #define C_GEO_ORE 5
 #define C_GEO_OBS 6
 
-#define TIME_CAP 24  // 1
-// #define TIME_CAP 32  // 2
+// #define TIME_CAP 24  // 1
+#define TIME_CAP 32  // 2
 
 class Strategy {
  public:
@@ -142,7 +142,7 @@ int main() {
   int counter = 0;
 
   // 2
-  // blueprints.resize(3);
+  blueprints.resize(3);
   //
   for (auto &b : blueprints) {
     auto strategy = Strategy(b);
@@ -150,7 +150,7 @@ int main() {
     auto score = strategy.run();
 
     // 1
-    score *= b.at(ID);
+    // score *= b.at(ID);
     // 2
     points.push_back(score);
     std::cout << "Current: " << ++counter << " Score: " << score
@@ -162,8 +162,8 @@ int main() {
     sum += p;
     product *= p;
   }
-  std::cout << "1. " << sum << std::endl;
-  // std::cout << "2. " << product << std::endl;
+  // std::cout << "1. " << sum << std::endl;
+  std::cout << "2. " << product << std::endl;
 
   return 0;
 }
